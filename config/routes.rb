@@ -3,31 +3,31 @@ Rails.application.routes.draw do
   scope module: :public do
     root to: 'homes#top'
     get 'about' => 'homes#about'
-    
+
     resources :items, only: [:index, :show]
-    
+
     get 'customers/my_page' => 'customers#show'
     get 'customers/information/edit' => 'customers#edit'
     patch 'customers/information' => 'customers#update'
     get 'customers/unsubscribe' => 'customers#unsubscribe'
     patch 'customers/withdraw' => 'customers#withdraw'
-    
+
     resources :cart_items, only: [:index, :update, :create, :destroy] do
       collection do
         delete 'destroy_all' => 'cart_items#destroy_all'
       end
     end
-    
+
     resources :orders, only: [:new, :create, :index, :show] do
       collection do
         post 'confirm' => 'orders#confirm'
         get 'thanks' => 'orders#thanks'
       end
     end
-    
+
     resources :addresses, only: [:index, :edit, :create, :update, :destroy]
   end
-  
+
 #admin側
   namespace :admin do
     root to: 'homes#top'
