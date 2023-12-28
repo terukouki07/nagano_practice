@@ -1,2 +1,27 @@
-<h1>Public::Items#index</h1>
-<p>Find me in app/views/public/items/index.html.erb</p>
+<div>
+  <h3>ジャンル検索</h3>
+  <% @genres.each do |genre| %>
+    <p><%= genre.name %></p>
+  <% end %>
+</div>
+
+<div>
+  <h2>商品一覧</h2>
+  <% @items.each do |item| %>
+    <%= link_to item_path(item.id) do %>
+      <%= image_tag item.get_image(400,200) %>
+    <% end %>
+    <div><%= item.name %></div>
+    <div>
+      <% if item.is_active == true %>
+        ¥ <%= item.price %>
+      <% else %>
+        販売停止中
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<div>
+  <%= paginate @items %>
+</div>
