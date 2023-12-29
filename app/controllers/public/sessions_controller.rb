@@ -2,6 +2,7 @@
 
 class Public::SessionsController < Devise::SessionsController
   before_action :configure_sign_in_params
+  before_action :customer_state, only: [:create]
 
   # GET /resource/sign_in
   # def new
@@ -31,5 +32,18 @@ class Public::SessionsController < Devise::SessionsController
   # If you have extra params to permit, append them to the sanitizer.
   def configure_sign_in_params
     devise_parameter_sanitizer.permit(:sign_in, keys: [:email])
+  end
+  
+  def customer_state
+    #フォームで入力されたEmailがCustomerテーブルに格納されているEmailカラムの中に存在するかをチェック。存在したらそのEmailを取得。存在しなかったら取得しない。
+    #email:これは比較するカラムを記述。比較するレコードをparams[:モデル名][:カラム名]で取得。
+    customer = Customer.find_by(email: params[:customer][:email])
+    #customerが空だった場合、returnで処理を終了する。
+    return if customer.nil?
+    #取得したEmail(customer)とペアのとパスワードがcustomerテーブルにあるかチェックしている。そしてparams[:モデル名][:カラム名]でフォームで入力されたパスワードを取得。
+    return unless customer.valid_password?(params[:customer][:password])
+    if customer.is_delete == true
+      redirect_to new_customer_registration_path
+    end
   end
 end
